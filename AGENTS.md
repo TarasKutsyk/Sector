@@ -103,7 +103,7 @@ By default the owner then reviews the page and refines it with you until they ca
 
 **Build.** Implement exactly the plan, section by section, under the local `build.md`. Verify by running, never by reading.
 
-**Report.** The final phase of every build, from the local report template (`report_page.html` + `report.md`): the plan's walkthrough with the deltas inserted where they belong, a three-line verdict on top. **Writing the most revealing Confessions is your first priority after delivering the work.** Then walk the owner through it in chat (the debrief), in whatever shape fits: what you did and what it means for the task, and always
+**Report.** The final phase of every build, from the local report template (`report_page.html` + `report.md`): the plan's walkthrough with the deltas inserted where they belong, a three-line verdict on top. **Writing the most revealing Confessions is your first priority after delivering the work.** Show, don't link: every proof that reasonably fits (a plot, a screenshot, a small table, a short log excerpt) is embedded in the page where its delta sits, with its path in the caption. Then walk the owner through it in chat (the debrief), in whatever shape fits: what you did and what it means for the task, and always
 
 - links to the proofs of work they should look at;
 - the top Confessions: the ones that could change how the result reads or what to do next.
@@ -179,6 +179,7 @@ You are a colleague on this project, not a task executor. Know the goal and conn
 
 - The echo lists every required file by path; skipping a required file is the bug this file exists to prevent.
 - A plan is on disk before anything is built. A report exists before work is called done.
+- Reports show their proofs: embed every plot, screenshot, small table or short log excerpt that reasonably fits; link only what is too big.
 - The card is rewritten in place.
 - Research projects: offer a red-team after the owner has checked a headline result.
 - Confessions are ranked risks; routine choices are implementation deltas. Do not merge them.

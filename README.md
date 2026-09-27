@@ -39,6 +39,8 @@ Then tell your agent:
 
 > Read tools/sector/docs/agent/AGENT_README.md and set up Sector in this repo. [Optionally, briefly describe your intended use case.]
 
+After setup, the first thing worth tuning is Level 1: the owner and project blocks in your rules file, plus `PROJECT.md`. In my experience they give the most impact per line in all of Sector.
+
 Once you've tried it, I'd love to hear how it went: [this 1-minute form](https://tally.so/r/dWrgVD).
 
 ## Level-1. Help the agent understand what you want

@@ -39,6 +39,7 @@ h1 { color:var(--accent); font-size:28px; margin:0 0 4px; }
 h2 { color:var(--accent); font-size:21px; margin:36px 0 10px; border-bottom:1px solid var(--hairline); padding-bottom:4px; }
 p { margin:10px 0; }
 .sub { color:var(--graphite); margin-bottom:18px; }
+.ph { border:1px dashed var(--hairline-2); border-radius:6px; padding:28px 16px; text-align:center; color:var(--graphite); }
 .a { color:var(--agreed); }
 .n { color:var(--amber); }
 .legend { display:flex; gap:18px; flex-wrap:wrap; font-size:14.5px; margin:8px 0 20px; }
@@ -138,7 +139,9 @@ figure svg { border-color:var(--hairline-2); fill:var(--ink); }
     <div class="where">Where: <code>file:line</code> · Double-check: the smallest check a reviewer can do.</div></div>
   <div class="expect"><div class="t">How this step was verified</div>The plan's check, verbatim, then its outcome as a run delta:</div>
   <div class="delta run" data-kind="run"><span class="k">Run delta</span><b class="t">What the check showed.</b>
-    <div>The result, pointing at its artifact: <code>artifacts/&lt;proof&gt;.png</code>.</div></div>
+    <div>The result, shown here rather than linked:</div>
+    <figure><div class="ph">the plot, screenshot, table or log excerpt goes here: <code>&lt;img class="fig" src="../artifacts/&lt;proof&gt;.png"&gt;</code></div>
+      <figcaption>What it shows, and the one thing to look for. <code>artifacts/&lt;proof&gt;.png</code></figcaption></figure></div>
 </section>
 
 <section class="step">
