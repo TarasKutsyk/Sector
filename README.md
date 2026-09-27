@@ -62,9 +62,11 @@ By default, the agent asks when your goal is unclear and flags conflicts with go
 ```
 Given: user preferences/goals + current request
                  ↓
-- If clear: the agent judges the current request against both -> If the goals align, proceed; otherwise suggest one highest-value adjustment
+- If clear: the agent judges the current request against both
+    -> If the goals align, proceed; otherwise suggest one highest-value adjustment
                  ↓
-- If not clear AND the answer would materially improve the result -> Stop and clarify with the user in a brief and easy to answer way;
+- If not clear AND the answer would materially improve the result
+    -> Stop and clarify with the user in a brief and easy to answer way
 ```
 (you can opt into this during setup and edit the workflow as you wish)
 
