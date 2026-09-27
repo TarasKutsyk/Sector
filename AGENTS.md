@@ -46,7 +46,7 @@ Run the validator at session open and repair what it flags on your workstream be
 
 **Owner block** (TBD, in the owner's own words; the hint after each line says what belongs there):
 
-- Who I am and what I care about most: TBD (your background in a line, and the one or two things that matter most to you in this project).
+- Who I am and what I care about most: TBD (your background, in a line).
 - What I want to understand or decide in the process, and at what level (methodology, architecture, code): TBD (what you want explained or left to you, and what the agent may simply handle).
 - How to talk to me (style, length, what bores me): TBD (how long answers should be, which words to avoid, anything you know about how you work best or fail, such as perfectionism).
 
