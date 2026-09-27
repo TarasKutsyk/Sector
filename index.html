@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sector — starmap</title>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="hud">
+      <div id="hud-title">SECTOR</div>
+      <div id="hud-hint">Ctrl+P find · drag to move · S select · B layout · Esc</div>
+      <button id="btn-reset-layout" class="hidden" title="put every dragged node back on the computed layout">reset layout</button>
+      <div id="select-bar" class="hidden">
+        <span id="select-count">0 selected</span>
+        <button id="btn-lock">Lock in →</button>
+        <button id="btn-save-default" title="make the current selection the default seeds on the next S">Save as default</button>
+        <button id="btn-clear">Clear</button>
+        <button id="btn-exit-select">Exit</button>
+      </div>
+    </div>
+    <aside id="panel" class="hidden"></aside>
+    <div id="modal-root" class="hidden"></div>
+    <div id="toast" class="hidden"></div>
+  </body>
+</html>

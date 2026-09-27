@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan: NAME</title>
+<!--
+  PLAN PAGE TEMPLATE (research mode). The page is the plan; the Markdown stub next to it is only a pointer.
+  Provenance ink, the whole point of this shape:
+    plain text          discussed and decided by the owner
+    <span class="a">    GREEN: the agent proposed it with a recommended answer and the owner accepted it as offered
+    <span class="n">    AMBER: new in this page, the owner sees it here for the first time
+  Mark sentences or whole blocks (class on a <p>, <li>, <div>). The share tag on every section is computed from the marks on load.
+  Every walkthrough section has: a number and title, a "what this does" line or small diagram, the content, and, if the section defines
+  a metric or an instrument, an .expect box: "an honest input must give X; check: <command>". Do not spam .expect: key metrics only.
+  Palette: both themes in one page with a switch (top-right). Dark by default (the starmap's night-blue look: navy ground, nebula glow, neutral text); light (warm white) when setup saved data-theme="light" on <html>. The reader can flip it anytime; the choice is remembered per browser. Adapt the tokens if your sector's style pack differs.
+  Publishing (only if your agent has a page-publishing tool, such as Claude's Artifact tool): the tool wraps the file itself, so publish a copy holding only <title>, <style> and <main> (no doctype/html/head/body);
+  the file under plans/ keeps the full document so it opens locally.
+-->
+<style>
+/* both themes live in every page: dark by default, light when <html data-theme="light">; the switch (top-right) flips them */
+:root { color-scheme:dark;
+        --ground:#05070f; --panel:#0b1020; --panel-2:#141b33; --ink:#e6e8ec; --bright:#f5f6f8;
+        --hairline:#1d2644; --hairline-2:#2b3760; --accent:#f5f6f8; --graphite:#a9b0bc; --ash:#7988b6;
+        --agreed:#9fd982; --new:#f5c563; --new-panel:#2e2b2a;
+        --amber:#f5c563; --amber-panel:#2e2b2a; --amber-line:#72603d;
+        --red:#ff9a8b; --red-panel:#261f2c; --red-line:#684449;
+        --good:#9fd982; --good-panel:#111a2e; --good-line:#3d5441;
+        --info:#8ab4ff; --info-panel:#182036; --info-line:#36486c; --link:#8ab4ff; }
+:root[data-theme="light"] { --ground:#fcf2d8; --panel:#fffcf3; --ink:#2b2a26; --hairline:#e3ddcf; --accent:#3e6b1b; --graphite:#6b665b; --amber:#bc450e; --amber-panel:#fbe9dc; --red:#b83a2e; --red-panel:#f8e8e4; --good:#4a7c1f; --good-panel:#f4fcda; --good-line:#b3c8a1; --info-panel:#ecf5fe; --info-line:#a9d1f8; --bright:var(--accent); --panel-2:#f8f0dd; --hairline-2:#e3ddcf; --link:#0971d2; --agreed:#3e6b1b; }
+body { background:var(--ground); color:var(--ink); font-family:"Segoe UI", system-ui, sans-serif; font-size:16px; line-height:1.55; margin:0; }
+main { max-width:920px; margin:0 auto; padding:32px 24px 64px; }
+h1 { color:var(--accent); font-size:28px; margin:0 0 4px; }
+h2 { color:var(--accent); font-size:21px; margin:36px 0 10px; border-bottom:1px solid var(--hairline); padding-bottom:4px; }
+p { margin:10px 0; }
+.sub { color:var(--graphite); margin-bottom:18px; }
+.a { color:var(--agreed); }
+.n { color:var(--amber); }
+.legend { display:flex; gap:18px; flex-wrap:wrap; font-size:14.5px; margin:8px 0 20px; }
+.legend span::before { content:"■ "; }
+.legend .a::before { color:var(--agreed); } .legend .n::before { color:var(--amber); } .legend .i::before { color:var(--ink); }
+.total { font-weight:600; }
+.step { background:var(--panel); border:1px solid var(--hairline); border-radius:6px; padding:14px 18px; margin:14px 0; }
+.step-head { display:flex; justify-content:space-between; gap:12px; align-items:baseline; flex-wrap:wrap; }
+.step h3 { color:var(--accent); font-size:17px; margin:0; }
+.share { font-size:13.5px; color:var(--graphite); white-space:nowrap; }
+.share b.a, .share b.n { font-weight:600; }
+.does { color:var(--graphite); font-size:14.5px; margin:4px 0 10px; border-left:3px solid var(--hairline); padding-left:10px; }
+.diagram { font-family:Consolas, "Cascadia Mono", monospace; font-size:13.5px; white-space:pre; overflow-x:auto; background:var(--ground); border:1px solid var(--hairline); border-radius:6px; padding:10px 14px; margin:8px 0; }
+.expect { background:var(--info-panel); border:1px solid var(--info-line); border-radius:6px; padding:10px 14px; margin:10px 0; font-size:15px; }
+.expect .t { font-weight:600; color:var(--accent); }
+.formula { font-family:Consolas, "Cascadia Mono", monospace; font-size:15px; background:var(--panel); border:1px solid var(--hairline); border-radius:6px; padding:8px 14px; margin:8px 0; overflow-wrap:anywhere; }
+table { border-collapse:collapse; width:100%; margin:12px 0; background:var(--panel); font-size:15px; }
+th, td { border:1px solid var(--hairline); padding:6px 10px; text-align:left; vertical-align:top; }
+th { color:var(--graphite); font-weight:600; }
+code { font-family:Consolas, "Cascadia Mono", monospace; font-size:14.5px; background:var(--panel); border:1px solid var(--hairline); border-radius:3px; padding:0 4px; }
+.note { border-left:3px solid var(--good-line); background:var(--good-panel); padding:8px 12px; margin:8px 0; font-size:15px; }
+.note .k { font-weight:600; color:var(--good); }
+/* ---- theme refinements (both themes) ---- */
+a { color:var(--link); text-underline-offset:2px; }
+h1, h2, h3, .step h3 { color:var(--bright); }
+h2 { border-bottom-color:var(--hairline-2); }
+.does { border-left-color:var(--hairline-2); }
+code { background:var(--panel-2); border-color:var(--hairline-2); color:inherit; }
+.formula { background:var(--panel-2); border-color:var(--hairline-2); }
+th { background:var(--panel-2); }
+.delta { border-left-width:3px; }
+.delta.impl { border-left-color:var(--amber); } .delta.run { border-left-color:var(--info); }
+.delta.confess { border-left-color:var(--red); } .delta.hi { border-left-color:var(--good); }
+.note { border:1px solid var(--hairline); border-left:3px solid var(--good); border-radius:6px; }
+figure svg { border-color:var(--hairline-2); fill:var(--ink); }
+/* ---- dark only: the starmap's night-blue ground and nebula glow (magenta, violet, rust) ---- */
+:root:not([data-theme="light"]) body { background:linear-gradient(#05070f, #0a0d1c); background-attachment:fixed; }
+:root:not([data-theme="light"]) body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.62;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1000' preserveAspectRatio='xMidYMid slice'><defs><filter id='f0' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.0035' numOctaves='5' seed='23'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.54 0 0 0 -0.66'/><feComposite in='SourceGraphic' operator='in'/></filter><radialGradient id='g0'><stop offset='0' stop-color='white'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><mask id='m0'><ellipse cx='256' cy='300' rx='496' ry='360' fill='url(%23g0)'/></mask><filter id='f1' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.0035' numOctaves='5' seed='11'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.20 0 0 0 -0.95'/><feComposite in='SourceGraphic' operator='in'/></filter><radialGradient id='g1'><stop offset='0' stop-color='white'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><mask id='m1'><ellipse cx='800' cy='420' rx='624' ry='430' fill='url(%23g1)'/></mask><filter id='f2' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.0035' numOctaves='5' seed='37'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.87 0 0 0 -0.81'/><feComposite in='SourceGraphic' operator='in'/></filter><radialGradient id='g2'><stop offset='0' stop-color='white'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><mask id='m2'><ellipse cx='1376' cy='200' rx='464' ry='340' fill='url(%23g2)'/></mask></defs><g transform='rotate(-20 256 300)' mask='url(%23m0)'><ellipse cx='256' cy='300' rx='496' ry='360' fill='%23a05a8a' opacity='.22'/><rect x='-240' y='-60' width='992' height='720' fill='%23a05a8a' filter='url(%23f0)'/></g><g transform='rotate(32 800 420)' mask='url(%23m1)'><ellipse cx='800' cy='420' rx='624' ry='430' fill='%238650c1' opacity='.22'/><rect x='176' y='-10' width='1248' height='860' fill='%238650c1' filter='url(%23f1)'/></g><g transform='rotate(11 1376 200)' mask='url(%23m2)'><ellipse cx='1376' cy='200' rx='464' ry='340' fill='%23b06a4a' opacity='.22'/><rect x='912' y='-140' width='928' height='680' fill='%23b06a4a' filter='url(%23f2)'/></g></svg>") center / cover no-repeat; }
+:root:not([data-theme="light"]) main { position:relative; }
+:root:not([data-theme="light"]) ::selection { background:#2b3f7a; color:#fff; }
+:root:not([data-theme="light"]) .step, :root:not([data-theme="light"]) .index, :root:not([data-theme="light"]) .verdict { box-shadow:inset 0 1px 0 rgba(160,185,255,.05), 0 10px 30px rgba(0,0,0,.35); }
+:root:not([data-theme="light"]) .verdict { border-left-color:var(--info); }
+:root:not([data-theme="light"]) .index .t, :root:not([data-theme="light"]) .expect .t, :root:not([data-theme="light"]) .verdict b, :root:not([data-theme="light"]) .delta .t { color:var(--bright); }
+:root:not([data-theme="light"]) .index a { color:var(--ink); text-decoration-color:rgba(138,180,255,.45); }
+:root:not([data-theme="light"]) .diagram, :root:not([data-theme="light"]) .txt { background:#070a16; border-color:var(--hairline-2); }
+/* raster plots: invert lightness, rotate hue back, so every series keeps its hue and the in-image legend stays true */
+:root:not([data-theme="light"]) img.fig { filter:invert(.9) hue-rotate(180deg) saturate(1.15); }
+/* theme switch, top-right: the theme this file was saved with is the default; a click flips it (remembered per browser) */
+.theme-switch { position:fixed; top:14px; right:16px; z-index:10; font:13px "Segoe UI", system-ui, sans-serif; color:var(--graphite); background:var(--panel); border:1px solid var(--hairline-2); border-radius:999px; padding:4px 12px; cursor:pointer; }
+.theme-switch:hover { color:var(--ink); }
+</style>
+</head>
+<body>
+<main>
+<button class="theme-switch" type="button"></button>
+<h1>Plan: NAME</h1>
+<p class="sub">Branch NAME · YYYY-MM-DD · status: draft until the owner says frozen · artifact: (URL if published)</p>
+<div class="legend"><span class="i">discussed and decided by the owner</span><span class="a">proposed by the agent, accepted as offered</span><span class="n">new in this page, first seen here</span><span class="total" id="total"></span></div>
+
+<h2>Context echo</h2>
+<p>Mode, goal file and its priority, the spec, the env constraint that matters, the lens. Each item by path with one line on what it implies for this plan. Suspected stale or missing context flagged here.</p>
+
+<h2>Planned implementation walkthrough</h2>
+<p class="sub">The body of the plan. Read it top to bottom; the share tag on each section says how much of it you have not seen before. Green and amber text is where your attention goes first.</p>
+
+<section class="step">
+  <div class="step-head"><h3>1. Section title</h3><span class="share"></span></div>
+  <p class="does">What this stage does, in one or two sentences. Or a small diagram:</p>
+  <div class="diagram">input ──▶ this stage ──▶ what comes out
+              │
+              └─ the one decision point inside it</div>
+  <p>Content decided in discussion reads in plain ink. <span class="a">A sentence the agent proposed and the owner accepted as offered reads in green.</span> <span class="n">A sentence that appears here for the first time reads in amber, and the reader knows to slow down.</span></p>
+  <div class="expect"><div class="t">What an honest input must give</div>If this section defines a metric or an instrument, state the invariant: e.g. "for the reference implementation, reported ÷ true is 1 within δ". Check: <code>the command that prints it</code>. The execution runs it and the report shows the number.</div>
+</section>
+
+<section class="step">
+  <div class="step-head"><h3>2. Next section</h3><span class="share"></span></div>
+  <p class="does">…</p>
+  <p>…</p>
+</section>
+
+<section class="step">
+  <div class="step-head"><h3>N. Produce proof of work X</h3><span class="share"></span></div>
+  <p class="does">Proof-of-work steps are walkthrough sections like any other: what is rendered, from which data, with which axes, saved where.</p>
+</section>
+
+<h2>Goal &amp; gates</h2>
+<p>Success in one sentence, tied to the goal file. Then the gates, the only sanctioned stops, with what happens when each is unmet. Cut instructions appear here only if the owner gave them.</p>
+<table>
+<tr><th>gate</th><th>rule, declared before results</th><th>if unmet</th></tr>
+<tr><td>G-…</td><td>…</td><td>…</td></tr>
+</table>
+
+<h2>Execution discipline</h2>
+<div class="diagram">Phase 0 … ──▶ Phase 1 … ──▶ Phase 2 …  (one line per phase, the entrypoint and the artifact it saves)</div>
+<div class="note"><span class="k">Env.</span> The constraint that matters for this run: machine, paths, what must never run concurrently, where results are saved and where they must not be.</div>
+<div class="note"><span class="k">Agents.</span> Whether subagents may be spawned at all, how many at a time, of which type, for which steps, and what they may never do (e.g. author the key artifact).</div>
+<div class="note"><span class="k">Catches.</span> Anything else the owner wants caught: a policy that does not apply here, a file that must not be touched, a number that must not change.</div>
+
+<h2>Proof of work (summary)</h2>
+<p>A list only; every item was a walkthrough section above. Two lists, never one: what the owner reads to stay in the driver's seat, and what exists for provenance and later debugging.</p>
+<p><b>Read these</b> (figures first; the debrief links the first one first):</p>
+<ul>
+  <li><code>artifacts/&lt;headline&gt;.png</code>: what it shows in one line, and the one thing to look for.</li>
+  <li><code>artifacts/&lt;…&gt;.png</code>: …</li>
+</ul>
+<p><b>Provenance, open only when checking something:</b></p>
+<ul>
+  <li><code>artifacts/&lt;run&gt;.txt</code>: verbatim tool output.</li>
+  <li><code>artifacts/&lt;…&gt;</code>: …</li>
+</ul>
+
+<script>
+// Agent-filled share per section, from the provenance marks. Honour-system on the marking side; arithmetic on this side.
+(function () {
+  const len = el => (el.textContent || "").replace(/\s+/g, " ").trim().length;
+  let T = 0, A = 0, N = 0;
+  document.querySelectorAll("section.step").forEach(sec => {
+    const total = len(sec) - len(sec.querySelector(".step-head"));
+    let a = 0, n = 0;
+    sec.querySelectorAll(".a").forEach(e => { if (!e.closest(".n")) a += len(e); });
+    sec.querySelectorAll(".n").forEach(e => { n += len(e); });
+    T += total; A += a; N += n;
+    const pct = x => Math.round(100 * x / Math.max(total, 1));
+    sec.querySelector(".share").innerHTML = `agent-filled ${pct(a + n)} % (<b class="a">green ${pct(a)} %</b>, <b class="n">amber ${pct(n)} %</b>)`;
+  });
+  const pct = x => Math.round(100 * x / Math.max(T, 1));
+  document.getElementById("total").textContent = `whole walkthrough: agent-filled ${pct(A + N)} % (green ${pct(A)} %, amber ${pct(N)} %)`;
+})();
+</script>
+<script>
+/* Theme switch. The <html data-theme> this file was saved with is the owner's default (none = dark);
+   a click flips it, and the choice is remembered for every Sector page opened in this browser. */
+(() => {
+  const root = document.documentElement, btn = document.querySelector(".theme-switch");
+  const apply = (t) => {
+    if (t === "light") root.setAttribute("data-theme", "light"); else root.removeAttribute("data-theme");
+    btn.textContent = t === "light" ? "☾ Dark" : "☀ Light";
+  };
+  apply(localStorage.getItem("sector-theme") || root.getAttribute("data-theme") || "dark");
+  btn.onclick = () => {
+    const t = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+    localStorage.setItem("sector-theme", t);
+    apply(t);
+  };
+})();
+</script>
+</main>
+</body>
+</html>

@@ -1,0 +1,260 @@
+/* The Sector starmap — dark glass over a galaxy. Panels are DOM; the map is
+   WebGL underneath (plan §Feel: game-shipped-by-caring-designers). */
+
+:root {
+  /* Chromium keeps LCD subpixel antialiasing on a composited layer only when
+     the layer is opaque, integer-translated and unfiltered. The reader panel,
+     the modals and the Ctrl+P palette all float over the WebGL canvas, so they
+     are composited whatever we do; --glass is therefore fully opaque and none
+     of them carries a backdrop-filter. The toast holds no reading text and
+     keeps the old translucent look. */
+  --glass: #0a0e1c;
+  --line: rgba(130, 160, 255, 0.22);
+  --text: #cdd9f4;
+  --dim: #8fa0c4;
+  --gold: #ffcf6e;
+  --cyan: #5ff2ff;
+}
+
+* { box-sizing: border-box; }
+/* Owner minibatch 6 E: every scrollable surface wears the same thin dark bar.
+   One global rule rather than a per-panel one, because the browser default (a
+   white bar, and on the LEFT in the owner's build of the Ctrl+P list) showed up
+   in the palette, the @ menu, the reader, the artifact list and the modals
+   alike. `direction` is never rtl anywhere, so the bar sits on the right. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a3350 transparent;
+}
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-thumb { background: #2a3350; border-radius: 3px; }
+*::-webkit-scrollbar-track { background: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #05070f; }
+body { font-family: "Segoe UI", system-ui, sans-serif; color: var(--text); }
+#app, #app canvas { position: fixed; inset: 0; }
+
+.hidden { display: none !important; }
+
+/* ---------- HUD ---------- */
+#hud {
+  position: fixed; top: 14px; left: 18px; right: 18px;
+  display: flex; align-items: center; gap: 18px;
+  pointer-events: none; z-index: 5;
+}
+#hud-title { font-size: 15px; letter-spacing: 6px; color: #e9efff; opacity: 0.9; }
+#hud-hint { font-size: 11px; letter-spacing: 1px; color: var(--dim); opacity: 0.8; }
+/* Plan step 4 D: one reset action, at the right end of the hint line, shown
+   only while something has actually been dragged. */
+#btn-reset-layout { pointer-events: auto; padding: 3px 9px; font-size: 11px; letter-spacing: 0.8px; }
+#select-bar {
+  margin-left: auto; pointer-events: auto;
+  display: flex; gap: 8px; align-items: center;
+  background: var(--glass); border: 1px solid var(--cyan);
+  border-radius: 10px; padding: 8px 12px;
+  box-shadow: 0 0 24px rgba(95, 242, 255, 0.25);
+}
+#select-count { font-size: 12px; color: var(--cyan); letter-spacing: 1px; }
+
+/* ---------- buttons & inputs ---------- */
+button {
+  background: rgba(40, 55, 110, 0.5); color: var(--text);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 7px 12px; font-size: 12px; letter-spacing: 0.6px;
+  cursor: pointer; transition: all 0.15s ease;
+}
+button:hover { border-color: #9db4ff; box-shadow: 0 0 14px rgba(130, 160, 255, 0.35); transform: translateY(-1px); }
+button.gold { border-color: var(--gold); color: var(--gold); }
+button.gold:hover { box-shadow: 0 0 16px rgba(255, 207, 110, 0.4); }
+.icon-btn { padding: 3px 9px; border-radius: 6px; }
+input, select, textarea {
+  background: rgba(15, 22, 46, 0.9); color: var(--text);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 7px 9px; font-size: 12.5px; font-family: inherit;
+}
+textarea { width: 100%; resize: vertical; line-height: 1.45; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #8fa7e8; }
+
+/* ---------- right panel ---------- */
+#panel {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 46vw);
+  background: var(--glass);
+  border-left: 1px solid var(--line);
+  box-shadow: -30px 0 60px rgba(0, 0, 0, 0.55);
+  padding: 18px 20px; z-index: 10;
+  display: flex; flex-direction: column; gap: 10px;
+  animation: slide-in 0.22s ease;
+}
+@keyframes slide-in { from { transform: translateX(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Owner steer 2026-09-23: the miniature Back, top-left, above the title. */
+.back-btn { align-self: flex-start; padding: 5px 10px; font-size: 11.5px; border-radius: 6px; margin-bottom: -2px; }
+.panel-head { display: flex; align-items: baseline; gap: 10px; }
+.panel-title { font-size: 15px; letter-spacing: 1.2px; color: #eaf0ff; flex: 1; }
+/* Plan step 3 B: the full repo-relative path, once, under the reader title. */
+.panel-path { font-size: 10.5px; color: var(--dim); opacity: 0.75; word-break: break-all; margin-top: -4px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  font-size: 10.5px; letter-spacing: 0.8px; color: var(--dim);
+  border: 1px solid var(--line); border-radius: 20px; padding: 2px 9px;
+}
+.panel-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.panel-body {
+  flex: 1; overflow-y: auto; font-size: 13px; line-height: 1.55;
+  border-top: 1px solid var(--line); padding-top: 12px;
+}
+.panel-body img { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+.panel-body pre { white-space: pre-wrap; font-size: 12px; color: #b9c6e6; }
+.panel-body code { background: rgba(90, 110, 180, 0.18); border-radius: 4px; padding: 1px 5px; }
+.panel-body h1, .panel-body h2, .panel-body h3 { color: #e6ecff; letter-spacing: 0.5px; }
+.panel-body a { color: #8fc7ff; }
+.panel-body table { border-collapse: collapse; font-size: 12px; }
+.panel-body td, .panel-body th { border: 1px solid var(--line); padding: 4px 8px; }
+
+/* artifacts section (reader) */
+.art-head { font-size: 11px; letter-spacing: 1px; color: var(--dim); text-transform: uppercase; }
+.art-head.dim, .art-list.dim { opacity: 0.62; }
+.art-list { max-height: 22vh; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.art-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; padding: 4px 6px; border-radius: 6px; cursor: pointer;
+  color: #b9c8ea; word-break: break-all;
+}
+.art-row:hover { background: rgba(255, 207, 110, 0.1); color: #ffe9b8; }
+.art-name { flex: 1; }
+/* Artifacts are moons: a muted disc in the tint the map gives that same file
+   (set inline from its path). Type is not a colour; only check-me and missing
+   are marked, both as rings. */
+.art-dot { width: 7px; height: 7px; border-radius: 50%; background: #9a8f82; flex: none; }
+.art-dot.check { box-shadow: 0 0 0 1px var(--gold); }
+/* a declared proof that is not on disk: hollow on the map, struck through here */
+.art-dot.gone { background: none; border: 1px solid #ff9a8b; }
+.art-row.gone .art-name { text-decoration: line-through; color: #93a0bb; }
+.art-tag {
+  font-size: 9.5px; letter-spacing: 0.7px; text-transform: uppercase; flex: none;
+  border: 1px solid var(--line); border-radius: 20px; padding: 1px 6px; color: var(--dim);
+}
+.art-tag.gold { color: var(--gold); border-color: rgba(255, 207, 110, 0.5); }
+.art-tag.warn { color: #ff9a8b; border-color: rgba(255, 154, 139, 0.45); }
+.art-acts { display: flex; gap: 4px; flex: none; }
+.art-act {
+  padding: 1px 6px; font-size: 10.5px; border-radius: 5px; line-height: 1.5;
+  background: rgba(40, 55, 110, 0.35);
+}
+.art-act:hover { transform: none; }
+
+/* a page (plan or report) read in place, plus a binary the panel will not render */
+.page-frame { width: 100%; height: 100%; min-height: 320px; border: 0; background: #0b0f1d; }
+.bin-note { font-size: 12.5px; color: var(--dim); }
+.chip.link { cursor: pointer; color: #8fc7ff; border-color: rgba(143, 199, 255, 0.4); }
+.chip.link:hover { color: #cfe6ff; }
+.btn-link {
+  display: inline-block; text-decoration: none;
+  background: rgba(40, 55, 110, 0.5); color: var(--text);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 7px 12px; font-size: 12px; letter-spacing: 0.6px;
+}
+.btn-link:hover { border-color: #9db4ff; }
+
+/* cluster list */
+.list .row {
+  display: flex; gap: 10px; padding: 7px 6px; border-bottom: 1px solid rgba(130, 160, 255, 0.1);
+  cursor: pointer; border-radius: 6px;
+}
+.list .row:hover { background: rgba(90, 120, 220, 0.12); }
+.row-date { color: var(--dim); font-size: 11px; min-width: 74px; }
+.row-kind { color: #7f9bd8; font-size: 11px; min-width: 56px; }
+.row-title { font-size: 12.5px; }
+
+/* composer */
+.cp-label { font-size: 11px; letter-spacing: 1px; color: var(--dim); text-transform: uppercase; }
+#cp-handover { height: 34%; font-size: 12px; }
+#cp-task { height: 26%; font-size: 13px; }
+.cp-row { display: flex; gap: 12px; align-items: center; }
+.cp-row label { font-size: 11.5px; color: var(--dim); display: flex; gap: 6px; align-items: center; }
+.cp-result {
+  font-size: 12.5px; border: 1px solid var(--gold); border-radius: 8px;
+  padding: 9px 11px; color: #ffe7b8; background: rgba(80, 60, 20, 0.25);
+}
+
+/* ---------- modals ---------- */
+#modal-root {
+  position: fixed; inset: 0; z-index: 20;
+  background: rgba(3, 5, 12, 0.6);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal {
+  width: 460px; max-height: 76vh; overflow-y: auto;
+  background: var(--glass); border: 1px solid var(--line); border-radius: 14px;
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 0 60px rgba(60, 90, 200, 0.35);
+  animation: pop-in 0.18s ease;
+}
+@keyframes pop-in { from { transform: scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.gm-report { font-size: 12.5px; line-height: 1.5; color: var(--dim); }
+.gm-report code { font-size: 11px; }
+.modal label { display: flex; flex-direction: column; gap: 5px; }
+.slot-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 320px; overflow-y: auto; }
+/* `.modal label` stacks its children, which is right for the game dialog's
+   captioned fields and wrong for a checkbox row: the box ended up ABOVE its
+   branch name in the Layout window (and in the slot picker before it). */
+.modal .slot-row { font-size: 12.5px; display: flex; flex-direction: row; gap: 8px; align-items: center; padding: 4px 2px; }
+/* Owner minibatch 6 C: the Layout window's third panel, one line of explanation
+   under each choice. */
+.lay-styles { display: flex; flex-direction: column; gap: 6px; }
+.lay-styles .slot-row { align-items: flex-start; }
+/* The native number spinner is two white browser buttons, the one bright thing
+   in a dark window. Hidden: the field is a plain dark input the owner types
+   into, and the keyboard arrows still step it. */
+.lay-styles input[type="number"] { width: 64px; padding: 3px 6px; appearance: textfield; -moz-appearance: textfield; }
+.lay-styles input[type="number"]::-webkit-inner-spin-button,
+.lay-styles input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+.lay-note { display: block; font-size: 11px; color: var(--dim); line-height: 1.4; }
+
+/* ---------- toast ---------- */
+#toast {
+  position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(9, 13, 28, 0.86); border: 1px solid var(--line); border-radius: 10px;
+  padding: 9px 18px; font-size: 12.5px; letter-spacing: 0.6px;
+  opacity: 0; transition: all 0.25s ease; z-index: 30; display: block !important;
+  pointer-events: none;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- finder: Ctrl+P palette and the composer's @ menu ---------- */
+#finder {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(3, 5, 12, 0.45);
+  display: flex; justify-content: center; align-items: flex-start;
+}
+.fd-box {
+  width: min(720px, 86vw); margin-top: 8vh;
+  background: var(--glass); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
+  padding: 10px; display: flex; flex-direction: column; gap: 8px;
+  animation: pop-in 0.14s ease;
+}
+#fd-input { font-size: 14px; padding: 9px 11px; }
+/* Owner minibatch 6 E: the @ menu had a horizontal bar because a long path is
+   wider than the textarea it is pinned to. Long paths ellipsize instead. */
+.fd-list, .fd-menu { overflow-y: auto; overflow-x: hidden; max-height: calc(12 * 26px); }
+.fd-menu {
+  position: fixed; z-index: 40;
+  background: var(--glass); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6); padding: 4px;
+}
+.fd-row {
+  display: flex; align-items: baseline; gap: 9px; white-space: nowrap;
+  height: 26px; padding: 0 8px; border-radius: 6px; cursor: pointer;
+}
+.fd-row.sel { background: rgba(95, 242, 255, 0.14); }
+.fd-name { font-size: 13px; color: #eaf0ff; flex: none; }
+.fd-dir {
+  font-size: 11.5px; color: var(--dim); flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+}
+.fd-kind {
+  font-size: 10px; letter-spacing: 0.8px; color: var(--gold);
+  border: 1px solid var(--line); border-radius: 20px; padding: 1px 7px; flex: none;
+}
+.fd-branch { font-size: 11px; color: #7f9bd8; flex: none; }
+.fd-empty { font-size: 12.5px; color: var(--dim); padding: 8px; }

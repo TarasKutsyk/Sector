@@ -1,0 +1,33 @@
+{
+  "preset": "research_notes",
+  "sector": {
+    "sector_root": ".sector/workstreams",
+    "context_dir": ".sector/core",
+    "games_dir": ".sector/_games",
+    "plans_dir": "plans",
+    "reports_dir": "reports",
+    "artifacts_dir": "artifacts",
+    "new_branch_required_context": [
+      "env"
+    ],
+    "non_workstream_dirs": [],
+    "atlas_path": ".sector/ATLAS.md"
+  },
+  "validation_command": "python tools/sector/atlas.py check",
+  "max_branch_slots": 6,
+  "branch_slots": [
+    "first_branch"
+  ],
+  "default_selected": [
+    ".sector/core/env/env_main.md",
+    ".sector/core/style/style_main.md"
+  ],
+  "editor_cmd": [
+    "code",
+    "-g",
+    "{path}"
+  ],
+  "handover_template": "We are working in a Sector-enabled research repo. This prompt was assembled from the starmap.\n\nREAD IN FULL, IN ORDER:\n{TO_READ}\n\nAfter reading, echo the task, files loaded, constraints in force, and any stale or missing context before starting.",
+  "plan_stub_template": "---\nkind: plan\ndate: {DATE}\nstatus: draft\nsupersedes: null\nsuperseded_by: null\nrequired_context: {REQUIRED_CONTEXT}\n---\n\n> AGENT INSTRUCTION: this is a draft task brief submitted from the starmap. At kickoff: read the TO-READ context below, start the planning op with the user, then overwrite this file with the full local plan template, renaming to whatever name best matches the user-agreed task.\n\n## TO-READ (in order)\n{TO_READ}\n\n## Task\n{TASK}\n",
+  "game_prompt_template": "I want to play a review game: {GAME}, anchored on `{REPORT}` (branch: {BRANCH}).\nTime I have for playing: {BUDGET}.\n{NOTES}\nGenerate game files only under .sector/_games/{BRANCH}/. Never plant errors in real code, real results, real configs, or canonical docs.\n"
+}

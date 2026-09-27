@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report: NAME</title>
+<!--
+  REPORT PAGE TEMPLATE (programming mode). The page is the report; the Markdown stub next to it is only a pointer.
+  It mirrors plan_page.html one to one, so the owner reads the walkthrough they already know and only the DELTAS carry new entropy.
+
+  How to write it:
+    1. Copy the plan page's "Planned implementation walkthrough" VERBATIM into "Actual implementation walkthrough", section by section,
+       provenance marks included. Do not reword the plan's text.
+    2. Insert a delta block at the exact place it belongs. Four kinds, each a word the reader sees, never colour alone:
+         <div class="delta impl">   IMPLEMENTATION DELTA: an ad-hoc choice the plan did not fix (glue, a default, a fallback, a name).
+         <div class="delta run">    RUN DELTA: what the run produced (a result, a gate outcome, a measurement, a transcript).
+         <div class="delta confess"> CONFESSION: an implementation delta that could silently change the result. Two fixed paragraphs, then the Where line: "What happened." (what the plan said, what was done, why; written for the reader who has read only the walkthrough section above it, so it carries all the context needed and assumes no knowledge of the implementation: no unexplained function, variable or file names) and "What it means for you." (the consequence for the result and what the owner must decide or watch; "Nothing to decide." when that is so).
+         <div class="delta hi">     HIGHLIGHT: a run delta that surprised.
+       Every delta has a data-kind attribute and a one-line <b class="t"> title; the delta index at the top is computed from them.
+    3. Fill Goal & gates with each gate's outcome (a run delta per row), and the two proof lists with the real artifacts. Map every artifact to a reproduction record below; artifacts from the same run may share one record.
+    4. The three-line Verdict under the title. The long version is the chat debrief, not this page.
+  Palette: both themes in one page with a switch (top-right). Dark by default (the starmap's night-blue look: navy ground, nebula glow, neutral text); light (warm white) when setup saved data-theme="light" on <html>. The reader can flip it anytime; the choice is remembered per browser. Adapt the tokens if your sector's style pack differs.
+  Publishing (only if your agent has a page-publishing tool, such as Claude's Artifact tool): publish a copy holding only <title>, <style> and <main>; the file under reports/ keeps the full document.
+-->
+<style>
+/* both themes live in every page: dark by default, light when <html data-theme="light">; the switch (top-right) flips them */
+:root { color-scheme:dark;
+        --ground:#05070f; --panel:#0b1020; --panel-2:#141b33; --ink:#e6e8ec; --bright:#f5f6f8;
+        --hairline:#1d2644; --hairline-2:#2b3760; --accent:#f5f6f8; --graphite:#a9b0bc; --ash:#7988b6;
+        --agreed:#9fd982; --new:#f5c563; --new-panel:#2e2b2a;
+        --amber:#f5c563; --amber-panel:#2e2b2a; --amber-line:#72603d;
+        --red:#ff9a8b; --red-panel:#261f2c; --red-line:#684449;
+        --good:#9fd982; --good-panel:#111a2e; --good-line:#3d5441;
+        --info:#8ab4ff; --info-panel:#182036; --info-line:#36486c; --link:#8ab4ff; }
+:root[data-theme="light"] { --ground:#fcf2d8; --panel:#fffcf3; --ink:#2b2a26; --hairline:#e3ddcf; --accent:#3e6b1b; --graphite:#6b665b; --amber:#bc450e; --amber-panel:#fbe9dc; --amber-line:#eab79c; --red:#b83a2e; --red-panel:#f8e8e4; --red-line:#e9bcb4; --good:#4a7c1f; --good-panel:#f4fcda; --good-line:#b3c8a1; --info:#0971d2; --info-panel:#ecf5fe; --info-line:#a9d1f8; --bright:var(--accent); --panel-2:#f8f0dd; --hairline-2:#e3ddcf; --link:#0971d2; --agreed:#3e6b1b; }
+body { background:var(--ground); color:var(--ink); font-family:"Segoe UI", system-ui, sans-serif; font-size:16px; line-height:1.55; margin:0; }
+main { max-width:920px; margin:0 auto; padding:32px 24px 64px; }
+h1 { color:var(--accent); font-size:28px; margin:0 0 4px; }
+h2 { color:var(--accent); font-size:21px; margin:36px 0 10px; border-bottom:1px solid var(--hairline); padding-bottom:4px; }
+p { margin:10px 0; }
+.sub { color:var(--graphite); margin-bottom:18px; }
+.a { color:var(--agreed); }
+.n { color:var(--amber); }
+.legend { display:flex; gap:18px; flex-wrap:wrap; font-size:14.5px; margin:8px 0 20px; }
+.legend span::before { content:"■ "; }
+.legend .a::before { color:var(--agreed); } .legend .n::before { color:var(--amber); } .legend .i::before { color:var(--ink); }
+.verdict { background:var(--panel); border:1px solid var(--hairline); border-left:4px solid var(--accent); border-radius:6px; padding:12px 16px; margin:14px 0; }
+.verdict b { color:var(--accent); }
+.index { background:var(--panel); border:1px solid var(--hairline); border-radius:6px; padding:12px 16px; margin:14px 0; font-size:15px; }
+.index .t { font-weight:600; color:var(--accent); }
+.index ol { margin:6px 0 0 18px; padding:0; }
+.index .counts { color:var(--graphite); margin-top:8px; }
+.step { background:var(--panel); border:1px solid var(--hairline); border-radius:6px; padding:14px 18px; margin:14px 0; }
+.step-head { display:flex; justify-content:space-between; gap:12px; align-items:baseline; flex-wrap:wrap; }
+.step h3 { color:var(--accent); font-size:17px; margin:0; }
+.share { font-size:13.5px; color:var(--graphite); white-space:nowrap; }
+.does { color:var(--graphite); font-size:14.5px; margin:4px 0 10px; border-left:3px solid var(--hairline); padding-left:10px; }
+.diagram { font-family:Consolas, "Cascadia Mono", monospace; font-size:13.5px; white-space:pre; overflow-x:auto; background:var(--ground); border:1px solid var(--hairline); border-radius:6px; padding:10px 14px; margin:8px 0; }
+.expect { background:var(--info-panel); border:1px solid var(--info-line); border-radius:6px; padding:10px 14px; margin:10px 0; font-size:15px; }
+.expect .t { font-weight:600; color:var(--accent); }
+/* the four delta kinds: the word on the block is the channel, the colour only echoes it */
+.delta { border-radius:6px; padding:10px 14px; margin:10px 0; font-size:15px; border:1px solid; }
+.delta .k { display:inline-block; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:700; margin-right:8px; }
+.delta .t { font-weight:600; }
+.delta.impl { background:var(--amber-panel); border-color:var(--amber-line); } .delta.impl .k { color:var(--amber); }
+.delta.run { background:var(--info-panel); border-color:var(--info-line); } .delta.run .k { color:var(--info); }
+.delta.confess { background:var(--red-panel); border-color:var(--red-line); } .delta.confess .k { color:var(--red); }
+.delta.hi { background:var(--good-panel); border-color:var(--good-line); } .delta.hi .k { color:var(--good); }
+.delta .where { color:var(--graphite); font-size:14px; margin-top:4px; }
+.delta.confess > div + div { margin-top:6px; } .delta.confess > .where { margin-top:8px; }
+table { border-collapse:collapse; width:100%; margin:12px 0; background:var(--panel); font-size:15px; }
+th, td { border:1px solid var(--hairline); padding:6px 10px; text-align:left; vertical-align:top; }
+th { color:var(--graphite); font-weight:600; }
+code { font-family:Consolas, "Cascadia Mono", monospace; font-size:14.5px; background:var(--panel); border:1px solid var(--hairline); border-radius:3px; padding:0 4px; }
+.log { color:var(--graphite); font-size:14.5px; }
+/* ---- theme refinements (both themes) ---- */
+a { color:var(--link); text-underline-offset:2px; }
+h1, h2, h3, .step h3 { color:var(--bright); }
+h2 { border-bottom-color:var(--hairline-2); }
+.does { border-left-color:var(--hairline-2); }
+code { background:var(--panel-2); border-color:var(--hairline-2); color:inherit; }
+.formula { background:var(--panel-2); border-color:var(--hairline-2); }
+th { background:var(--panel-2); }
+.delta { border-left-width:3px; }
+.delta.impl { border-left-color:var(--amber); } .delta.run { border-left-color:var(--info); }
+.delta.confess { border-left-color:var(--red); } .delta.hi { border-left-color:var(--good); }
+.note { border:1px solid var(--hairline); border-left:3px solid var(--good); border-radius:6px; }
+figure svg { border-color:var(--hairline-2); fill:var(--ink); }
+/* ---- dark only: the starmap's night-blue ground and nebula glow (magenta, violet, rust) ---- */
+:root:not([data-theme="light"]) body { background:linear-gradient(#05070f, #0a0d1c); background-attachment:fixed; }
+:root:not([data-theme="light"]) body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.62;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1000' preserveAspectRatio='xMidYMid slice'><defs><filter id='f0' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.0035' numOctaves='5' seed='23'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.54 0 0 0 -0.66'/><feComposite in='SourceGraphic' operator='in'/></filter><radialGradient id='g0'><stop offset='0' stop-color='white'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><mask id='m0'><ellipse cx='256' cy='300' rx='496' ry='360' fill='url(%23g0)'/></mask><filter id='f1' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.0035' numOctaves='5' seed='11'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.20 0 0 0 -0.95'/><feComposite in='SourceGraphic' operator='in'/></filter><radialGradient id='g1'><stop offset='0' stop-color='white'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><mask id='m1'><ellipse cx='800' cy='420' rx='624' ry='430' fill='url(%23g1)'/></mask><filter id='f2' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.0035' numOctaves='5' seed='37'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.87 0 0 0 -0.81'/><feComposite in='SourceGraphic' operator='in'/></filter><radialGradient id='g2'><stop offset='0' stop-color='white'/><stop offset='1' stop-color='white' stop-opacity='0'/></radialGradient><mask id='m2'><ellipse cx='1376' cy='200' rx='464' ry='340' fill='url(%23g2)'/></mask></defs><g transform='rotate(-20 256 300)' mask='url(%23m0)'><ellipse cx='256' cy='300' rx='496' ry='360' fill='%23a05a8a' opacity='.22'/><rect x='-240' y='-60' width='992' height='720' fill='%23a05a8a' filter='url(%23f0)'/></g><g transform='rotate(32 800 420)' mask='url(%23m1)'><ellipse cx='800' cy='420' rx='624' ry='430' fill='%238650c1' opacity='.22'/><rect x='176' y='-10' width='1248' height='860' fill='%238650c1' filter='url(%23f1)'/></g><g transform='rotate(11 1376 200)' mask='url(%23m2)'><ellipse cx='1376' cy='200' rx='464' ry='340' fill='%23b06a4a' opacity='.22'/><rect x='912' y='-140' width='928' height='680' fill='%23b06a4a' filter='url(%23f2)'/></g></svg>") center / cover no-repeat; }
+:root:not([data-theme="light"]) main { position:relative; }
+:root:not([data-theme="light"]) ::selection { background:#2b3f7a; color:#fff; }
+:root:not([data-theme="light"]) .step, :root:not([data-theme="light"]) .index, :root:not([data-theme="light"]) .verdict { box-shadow:inset 0 1px 0 rgba(160,185,255,.05), 0 10px 30px rgba(0,0,0,.35); }
+:root:not([data-theme="light"]) .verdict { border-left-color:var(--info); }
+:root:not([data-theme="light"]) .index .t, :root:not([data-theme="light"]) .expect .t, :root:not([data-theme="light"]) .verdict b, :root:not([data-theme="light"]) .delta .t { color:var(--bright); }
+:root:not([data-theme="light"]) .index a { color:var(--ink); text-decoration-color:rgba(138,180,255,.45); }
+:root:not([data-theme="light"]) .diagram, :root:not([data-theme="light"]) .txt { background:#070a16; border-color:var(--hairline-2); }
+/* raster plots: invert lightness, rotate hue back, so every series keeps its hue and the in-image legend stays true */
+:root:not([data-theme="light"]) img.fig { filter:invert(.9) hue-rotate(180deg) saturate(1.15); }
+/* theme switch, top-right: the theme this file was saved with is the default; a click flips it (remembered per browser) */
+.theme-switch { position:fixed; top:14px; right:16px; z-index:10; font:13px "Segoe UI", system-ui, sans-serif; color:var(--graphite); background:var(--panel); border:1px solid var(--hairline-2); border-radius:999px; padding:4px 12px; cursor:pointer; }
+.theme-switch:hover { color:var(--ink); }
+</style>
+</head>
+<body>
+<main>
+<button class="theme-switch" type="button"></button>
+<h1>Report: NAME</h1>
+<p class="sub">Workstream NAME · YYYY-MM-DD · implements <code>plans/YYYY-MM-DD_NAME.html</code> · artifact: (URL if published)</p>
+
+<div class="verdict">
+  <p><b>What now works.</b> One line.</p>
+  <p><b>Gates.</b> One line: which passed, which did not, under what assumption.</p>
+  <p><b>Look first.</b> One line: the artifact the debrief links first.</p>
+</div>
+
+<div class="index" id="index"><span class="t">Delta index</span> (computed from the blocks below on load)</div>
+
+<div class="legend"><span class="i">plan text, decided by the owner</span><span class="a">plan text the agent proposed, accepted as offered</span><span class="n">plan text first seen in the plan page</span></div>
+
+<h2>Plan recap &amp; fidelity</h2>
+<p>What the plan asked, in the detail needed to read the deltas below. Then what actually ran: one line per deviation (changed, dropped, deferred, failed and rerun, not run and why). Stale or missing context discovered during the build is flagged here.</p>
+
+<h2>Actual implementation walkthrough</h2>
+<p class="sub">The plan's walkthrough, copied verbatim, with every delta inserted where it belongs. Read the deltas; the rest you already know.</p>
+
+<section class="step">
+  <div class="step-head"><h3>1. Section title (verbatim from the plan)</h3><span class="share"></span></div>
+  <p class="does">The plan's "what this does" line, verbatim.</p>
+  <p>The plan's content, verbatim, provenance marks included. <span class="a">Green stays green.</span> <span class="n">Amber stays amber.</span></p>
+  <div class="delta impl" data-kind="impl"><span class="k">Implementation delta</span><b class="t">One-line title of the ad-hoc choice.</b>
+    <div>What was chosen and why the plan left it open.</div></div>
+  <div class="delta confess" data-kind="confess"><span class="k">Confession</span><b class="t">If this build is wrong, it is most likely because of this.</b>
+    <div><b>What happened.</b> What the plan said, what was actually done, and why. Written for a reader who has read only the section above: every piece of context they need is here, and nothing assumes knowledge of the implementation (no unexplained function, variable or file names).</div>
+    <div><b>What it means for you.</b> How this could change the result, and what the owner must decide or watch for. "Nothing to decide." when that is the case.</div>
+    <div class="where">Where: <code>file:line</code> · Double-check: the smallest check a reviewer can do.</div></div>
+  <div class="expect"><div class="t">How this step was verified</div>The plan's check, verbatim, then its outcome as a run delta:</div>
+  <div class="delta run" data-kind="run"><span class="k">Run delta</span><b class="t">What the check showed.</b>
+    <div>The result, pointing at its artifact: <code>artifacts/&lt;proof&gt;.png</code>.</div></div>
+</section>
+
+<section class="step">
+  <div class="step-head"><h3>2. Next section (verbatim from the plan)</h3><span class="share"></span></div>
+  <p class="does">…</p>
+  <p>…</p>
+  <div class="delta hi" data-kind="hi"><span class="k">Highlight</span><b class="t">Something the run taught that nobody expected.</b>
+    <div>One or two sentences.</div></div>
+</section>
+
+<h2>Goal &amp; gates, resolved</h2>
+<p>The plan's goal and non-goals, verbatim. Each gate row gains its outcome.</p>
+<table>
+<tr><th>gate</th><th>rule, declared before results</th><th>outcome (run delta)</th></tr>
+<tr><td>G-…</td><td>…</td><td>passed / not met, and what was done about it</td></tr>
+</table>
+
+<h2>Proof of work</h2>
+<p>The plan's two lists, now with the real artifacts. The stub's front-matter repeats them as <code>look_at</code> and <code>provenance</code>; the card nests the first list under this report.</p>
+<p><b>Look at these</b> (the debrief links them):</p>
+<ul>
+  <li><code>artifacts/&lt;headline&gt;.png</code>: what it shows in one line, and the one thing to look for.</li>
+</ul>
+<p><b>Provenance, open only when checking something:</b></p>
+<ul>
+  <li><code>artifacts/&lt;run&gt;.txt</code>: verbatim tool output.</li>
+</ul>
+<h3>Reproduce the artifacts</h3>
+<p>Every artifact cited in this report must appear in a record below, including supporting outputs. Artifacts produced together may share a record; different code states or commands need separate records. Repeat these records in the stub's <code>reproduction</code> field.</p>
+<ul>
+  <li><b>Artifacts:</b> <code>artifacts/&lt;headline&gt;.png</code>, <code>artifacts/&lt;run&gt;.txt</code><br>
+    <b>Source:</b> repository + full commit ID used at run time.<br>
+    <b>Uncommitted changes:</b> link to the saved patch and any required new files, or "none".<br>
+    <b>Reproduce:</b> command with working directory, or link to exact steps, including setup, input/config versions and seeds where relevant.<br>
+    <b>Limits:</b> "none known", or what is missing, unavailable or nondeterministic.</li>
+</ul>
+<p>Capture the code state when producing the artifact, not when writing the report. A commit ID alone does not capture uncommitted changes: save a patch against that commit (staged and unstaged changes), plus required untracked files; record submodule states separately if used. If anything needed is unsaved, mark reproduction incomplete under Limits. For manual artifacts, give the source and creation steps; do not invent a generating command.</p>
+
+<h2>Log</h2>
+<p class="log">Chronological trace: commands, failed checks, fixes, files touched. Last and skippable.</p>
+
+<script>
+// Delta index: confessions first, then per-kind counts per section. Computed from the blocks, so the index can never disagree with the page.
+(function () {
+  const names = { confess: "Confessions", impl: "Implementation deltas", run: "Run deltas", hi: "Highlights" };
+  const sections = [...document.querySelectorAll("section.step")];
+  const confessions = [];
+  const counts = {};
+  sections.forEach((sec, i) => {
+    const title = sec.querySelector("h3").textContent.trim();
+    const local = {};
+    sec.querySelectorAll(".delta").forEach(d => {
+      const kind = d.dataset.kind;
+      local[kind] = (local[kind] || 0) + 1;
+      counts[kind] = (counts[kind] || 0) + 1;
+      if (kind === "confess") confessions.push({ title: d.querySelector(".t").textContent.trim(), section: title, el: d });
+    });
+    const parts = Object.keys(local).map(k => `${local[k]} ${names[k].toLowerCase()}`);
+    sec.querySelector(".share").textContent = parts.length ? parts.join(", ") : "no deltas";
+  });
+  const box = document.getElementById("index");
+  let html = `<span class="t">Delta index</span>`;
+  if (confessions.length) {
+    html += `<ol>` + confessions.map((c, k) => {
+      c.el.id = c.el.id || `confession-${k + 1}`;
+      return `<li><a href="#${c.el.id}">${c.title}</a> <span class="counts">(in ${c.section})</span></li>`;
+    }).join("") + `</ol>`;
+  } else {
+    html += `<div class="counts">No confessions.</div>`;
+  }
+  const totals = Object.keys(names).filter(k => counts[k]).map(k => `${counts[k]} ${names[k].toLowerCase()}`);
+  html += `<div class="counts">${totals.length ? totals.join(" · ") : "no deltas at all: the plan ran as written"}</div>`;
+  box.innerHTML = html;
+})();
+</script>
+<script>
+/* Theme switch. The <html data-theme> this file was saved with is the owner's default (none = dark);
+   a click flips it, and the choice is remembered for every Sector page opened in this browser. */
+(() => {
+  const root = document.documentElement, btn = document.querySelector(".theme-switch");
+  const apply = (t) => {
+    if (t === "light") root.setAttribute("data-theme", "light"); else root.removeAttribute("data-theme");
+    btn.textContent = t === "light" ? "☾ Dark" : "☀ Light";
+  };
+  apply(localStorage.getItem("sector-theme") || root.getAttribute("data-theme") || "dark");
+  btn.onclick = () => {
+    const t = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+    localStorage.setItem("sector-theme", t);
+    apply(t);
+  };
+})();
+</script>
+</main>
+</body>
+</html>
