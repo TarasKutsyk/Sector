@@ -74,7 +74,7 @@ Sector incentivizes this engagement by letting you **be pro-active** in a few ac
 - **When the review surface becomes too big: a lesson.** A [linear walkthrough](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/) of the experiment code, step by step from the inputs to the numbers, grounded in the real code. This is the one I use most.
 - **While planning: Queen's Move.** Write the key piece yourself (a function, a notebook cell), agree its checks in the plan, and the agent builds the rest of the experiment around it. Earn score from the #checks passed, minus hints opened.
 
-**Red-teaming a headline result.** Not a game, but part of research mode by default: once you've checked the report, the agent offers to **attack the result** together with you, simplest reasons first. How could this be false? What alternative explanations fit the same data? What are the cheapest controls that would rule each one out? The controls you decide are often good next plan candidates.
+**Red-teaming a headline result** (inspired by [Neel Nanda's advice on research](https://www.alignmentforum.org/s/5GT3yoYM9gRmMEKqL/p/cbBwwm4jW6AZctymL#Truth%20Seeking)). Not a game, but part of research mode by default: once you've checked the report, the agent offers to **attack the result** together with you, simplest reasons first. How could this be false? What alternative explanations fit the same data? What are the cheapest controls that would rule each one out? The controls you decide are often good next plan candidates.
 
 In one picture, with the review loop from Level 2:
 
