@@ -22,7 +22,8 @@ from this menu and let the user choose.
 ## Artifact Rules
 
 - Keep light human-inspectable artifacts in
-  `.sector/workstreams/<name>/artifacts/`.
+  `.sector/workstreams/<workstream>/artifacts/<name>/`: one folder per plan-report
+  pair, named after the `<name>` their files share, never loose in `artifacts/`.
 - Do not store secrets, production data, private customer data, or sensitive
   logs in Sector artifacts.
 - Heavy outputs stay wherever the project normally stores them; the report

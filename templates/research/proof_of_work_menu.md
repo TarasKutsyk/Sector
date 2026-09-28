@@ -16,7 +16,8 @@ plan time — never mid-run.
 ## Artifact Rules
 
 - Every artifact named in a report's §Proof of work gets a repo-local copy in
-  `<branch>/artifacts/` — light human-inspectable files only: plots
+  `<branch>/artifacts/<name>/`, one folder per plan-report pair named after the
+  `<name>` their files share — light human-inspectable files only: plots
   (png/pdf), audits and printed-example dumps (md/txt), compact metric
   summaries (json).
 - Heavy files — checkpoints, caches, raw generation dumps — never enter the

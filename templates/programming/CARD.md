@@ -17,8 +17,8 @@ the map draws them as its satellites:
 live_docs:
   - plans/2026-09-11_search.md
   - reports/2026-09-11_search.md:
-      - artifacts/search_ctrl_p.png
-      - artifacts/at_reference.png
+      - artifacts/search/ctrl_p.png
+      - artifacts/search/at_reference.png
 
 check-me lists what is still waiting for the owner's eyes: proofs a report
 tells them to look at, lessons produced in debt payoff. The agent adds an

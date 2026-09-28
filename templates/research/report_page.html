@@ -140,8 +140,8 @@ figure svg { border-color:var(--hairline-2); fill:var(--ink); }
   <div class="expect"><div class="t">How this step was verified</div>The plan's check, verbatim, then its outcome as a run delta:</div>
   <div class="delta run" data-kind="run"><span class="k">Run delta</span><b class="t">What the check showed.</b>
     <div>The result, shown here rather than linked:</div>
-    <figure><div class="ph">the plot, screenshot, table or log excerpt goes here: <code>&lt;img class="fig" src="../artifacts/&lt;proof&gt;.png"&gt;</code></div>
-      <figcaption>What it shows, and the one thing to look for. <code>artifacts/&lt;proof&gt;.png</code></figcaption></figure></div>
+    <figure><div class="ph">the plot, screenshot, table or log excerpt goes here: <code>&lt;img class="fig" src="../artifacts/&lt;name&gt;/&lt;proof&gt;.png"&gt;</code></div>
+      <figcaption>What it shows, and the one thing to look for. <code>artifacts/&lt;name&gt;/&lt;proof&gt;.png</code></figcaption></figure></div>
 </section>
 
 <section class="step">
@@ -163,16 +163,16 @@ figure svg { border-color:var(--hairline-2); fill:var(--ink); }
 <p>The plan's two lists, now with the real artifacts. The stub's front-matter repeats them as <code>look_at</code> and <code>provenance</code>; the card nests the first list under this report.</p>
 <p><b>Look at these</b> (the debrief links them):</p>
 <ul>
-  <li><code>artifacts/&lt;headline&gt;.png</code>: what it shows in one line, and the one thing to look for.</li>
+  <li><code>artifacts/&lt;name&gt;/&lt;headline&gt;.png</code>: what it shows in one line, and the one thing to look for.</li>
 </ul>
 <p><b>Provenance, open only when checking something:</b></p>
 <ul>
-  <li><code>artifacts/&lt;run&gt;.txt</code>: verbatim tool output.</li>
+  <li><code>artifacts/&lt;name&gt;/&lt;run&gt;.txt</code>: verbatim tool output.</li>
 </ul>
 <h3>Reproduce the artifacts</h3>
 <p>Every artifact cited in this report must appear in a record below, including supporting outputs. Artifacts produced together may share a record; different code states or commands need separate records. Repeat these records in the stub's <code>reproduction</code> field.</p>
 <ul>
-  <li><b>Artifacts:</b> <code>artifacts/&lt;headline&gt;.png</code>, <code>artifacts/&lt;run&gt;.txt</code><br>
+  <li><b>Artifacts:</b> <code>artifacts/&lt;name&gt;/&lt;headline&gt;.png</code>, <code>artifacts/&lt;name&gt;/&lt;run&gt;.txt</code><br>
     <b>Source:</b> repository + full commit ID used at run time.<br>
     <b>Uncommitted changes:</b> link to the saved patch and any required new files, or "none".<br>
     <b>Reproduce:</b> command with working directory, or link to exact steps, including setup, input/config versions and seeds where relevant.<br>

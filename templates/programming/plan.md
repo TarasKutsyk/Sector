@@ -10,7 +10,7 @@ page: plans/YYYY-MM-DD_<name>.html        # THE PLAN. This Markdown file is its 
 artifact: https://claude.ai/code/artifact/<id>   # the published page, if one was published; else leave empty
 control: code-level | goal-level          # how much of the implementation the owner steers (the Control line of AGENTS.md / CLAUDE.md)
 proof_of_work:
-  - artifacts/<planned-proof>.png
+  - artifacts/<name>/<planned-proof>.png
 ---
 
 # <Plan Title>

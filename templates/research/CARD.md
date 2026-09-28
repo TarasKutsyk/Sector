@@ -18,8 +18,8 @@ the map draws them as its satellites:
 live_docs:
   - plans/2026-09-11_sweep.md
   - reports/2026-09-11_sweep.md:
-      - artifacts/frontier.png
-      - artifacts/printed_examples.md
+      - artifacts/sweep/frontier.png
+      - artifacts/sweep/printed_examples.md
 
 check-me: the agent adds an item when it produces a proof or a lesson; only
 the owner removes items.
