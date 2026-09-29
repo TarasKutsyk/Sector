@@ -13,34 +13,11 @@ Even if you're aligned on "what good looks like" on a high-level, many problems 
 
 This is why planning sessions exist, and unlike native implementations in Claude Code/Codex where agents ask you only the 3-4 most high-level questions, Sector's planning is multi-round (inspired by [Matt Pocock's grilling skills](https://github.com/mattpocock/skills)), and lets you dive much deeper into the experiment design. This results in complete, linear specifications, that you can **also use later to review** the work:
 
-```text
-PLAN: agreed with you, before the run   REPORT: the same chain, after the run
--------------------------------------   -------------------------------------
-1. What goes in                         1. What goes in: as planned
-   [500 prompts from dataset D,
-   held-out split]
-   
-2. How it's processed    ------------>  2. How it's processed: as planned,
-                                           except for one choice:
-                                           +-------------------------------+
-                                           | CONFESSION: 40 prompts were   |
-                                           | too long, so I truncated them |
-                                           | to 512 tokens. If the effect  |
-                                           | sits late in the prompt, the  |
-                                           | result is understated.        |
-                                           +-------------------------------+
-
-3. What comes out                       3. What comes out: as planned
-
-4. What we measure                      4. What we measure: as planned,
-   [probe accuracy; success = beats        judged by the rule fixed in the
-   the random baseline by 5+ points,       plan, each number linked to the
-   fixed now, before any result]           artifact that holds it
-```
+![The plan agreed before the run, and the report after it: the same four steps, with one Confession inserted where the agent deviated](img/plan_vs_report.png)
 
 So you don't only see the results, but also a complete methodological chain leading to them, **including all the ad-hoc choices the agent makes** that can invalidate the results. These choice reveals are called Confessions and it's the number one thing that helped me catch methodological problems before it was too late. You can see it as colored boxes on the example below:
 
-![A report page: implementation deltas and Confessions in coloured boxes](img/report.png)
+![A report page: implementation deltas and Confessions in coloured boxes](img/report_white.png)
 
 The upper part (with colored text) comes from the corresponding plan, and separates the snippets you explicitly confirmed during interview (green) from the ones the agent added on its own (amber), to help you focus on the new parts. The plan also includes other sections that have made my long-running sessions much more effective: experiment-specific evaluation metric, decision gates (e.g. what to do if the metric is low/high), when to stop or iterate further, and so on.
 
@@ -78,28 +55,7 @@ Sector incentivizes this engagement by letting you **be pro-active** in a few ac
 
 In one picture, with the review loop from Level 2:
 
-```text
-PLAN ------------------> EXECUTE
- -> interview rounds        |
- -> plan page               v
- -> Queen's Move: you    REPORT-REVIEW <------+
-    write the key piece     |                 |
-    yourself                +-- fix issues ---+
-  ^                         |
-  |                         v
-  |                      LEVEL 4: engage with the results
-  |                       -> lesson: a linear walkthrough
-  |                          of the experiment code
-  |                       -> Sabotage Hunt: find the errors
-  |                          planted in a walkthrough
-  |                       -> Check My Summary: explain the
-  |                          result in your own words
-  |                       -> red-team: how could this be
-  |                          false, which controls rule
-  |                          it out?
-  |                         |
-  +---- next PLAN <---------+
-```
+![The review loop: plan, execute, report and review, then Level 4 activities that feed the next plan](img/level4_loop.png)
 
 These are selected examples; the full menu (five games and two lessons) is in [the add-ons guide](../templates/addons/README.md).
 

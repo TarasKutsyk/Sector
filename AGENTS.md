@@ -97,11 +97,11 @@ The shape of every op lives in the local templates (the `Workflow files:` line o
 - **The owner is short on time** ("I have 5 minutes", "just launch it"): still plan, but ask only the 1 to 3 questions whose answers would change the implementation most, plus one phrase of "what good looks like", and "I stop only when" conditions if they haven't given it. Fill in everything else with your recommendation, including the proofs of work and the done criteria, marked as agent-filled on the plan page, so the owner can veto it later. "Just launch it" also skips the plan review (see Plan).
 - **Unsure which case:** ask in one line rather than guess.
 
-**Plan.** Interview first, in rounds, with a recommended answer for each question; facts are your job to find, never the owner's. Then write the plan from the local plan template (`plan_page.html` + `plan.md`). **A plan is not finished until the page and its stub are on disk** under the workstream's `plans/` and named in the card's `live_docs`. Cutting scope is never the agent's decision.
+**Plan.** Interview first, in rounds, with a recommended answer for each question; facts are your job to find, never the owner's. Every plan names its **workflow mode** in `required_context`: `workflow.solo` by default. When `orchestrated.md` is installed, the interview's last question picks it: "How should this run? **(a) solo (default)**: I build it myself (b) orchestrated: one subagent per stage, I verify". Then write the plan from the local plan template (`plan_page.html` + `plan.md`). **A plan is not finished until the page and its stub are on disk** under the workstream's `plans/` and named in the card's `live_docs`. Cutting scope is never the agent's decision.
 
 By default the owner then reviews the page and refines it with you until they call it frozen; build only after that. **"Just launch it"** (or anything that says the same) skips the review: freeze the first version, say in one line where the page is, and start the build right away. The owner reads the plan later, next to the report.
 
-**Build.** Implement exactly the plan, section by section, under the local `build.md`. Verify by running, never by reading.
+**Build.** Implement exactly the plan, section by section, under the workflow mode it names, read in full before you start: `solo.md` in the workflow pack of the core context dir (you build it yourself), or `orchestrated.md` (one subagent per stage, you verify). Verify by running, never by reading.
 
 **Report.** The final phase of every build, from the local report template (`report_page.html` + `report.md`). It reuses its plan's `<name>`, with its own date: `plans/2026-09-11_login.html` → `reports/2026-09-12_login.html`, and the pair's artifacts go to `artifacts/login/`. The report page holds the plan's walkthrough with the deltas inserted where they belong, a three-line verdict on top. **Writing the most revealing Confessions is your first priority after delivering the work.** Show, don't link: every proof that reasonably fits (a plot, a screenshot, a small table, a short log excerpt) is embedded in the page where its delta sits, with its path in the caption. Then walk the owner through it in chat (the debrief), in whatever shape fits: what you did and what it means for the task, and always
 
@@ -167,9 +167,9 @@ Under every policy: an offer is one line, once at the end; skip it when the owne
 
 ## Mode notes
 
-**Programming mode** (default): the ops are Plan, Build, Report, optional Ship (Scope, Checks agreed with the owner at run time, Verdict with exact caveats, Confessions). Local templates: `plan_page.html` + `plan.md`, `build.md`, `report_page.html` + `report.md`, `ship.md`, `proof_of_work_menu.md`.
+**Programming mode** (default): the ops are Plan, Build, Report, optional Ship (Scope, Checks agreed with the owner at run time, Verdict with exact caveats, Confessions). Local templates: `plan_page.html` + `plan.md`, `report_page.html` + `report.md`, `ship.md`, `proof_of_work_menu.md`; the workflow pack holds `solo.md` (and `orchestrated.md` if installed).
 
-**Research mode**: Build is Execute and follows the execution discipline in the local `execute.md` (one real entrypoint, artifacts saved by the script, interpretation only from saved artifacts, no silent reruns, no post-hoc criteria). Report is the report page with the same delta shape plus next-experiment candidates. The controls the owner picks in a red-team (Agent responsibilities) go into the report's next-experiment candidates.
+**Research mode**: Build is Execute, and the research `solo.md` in the workflow pack carries its rules (one real entrypoint, artifacts saved by the script, interpretation only from saved artifacts, no silent reruns, no post-hoc criteria). Report is the report page with the same delta shape plus next-experiment candidates. The controls the owner picks in a red-team (Agent responsibilities) go into the report's next-experiment candidates.
 
 ## Live the project
 
@@ -178,7 +178,7 @@ You are a colleague on this project, not a task executor. Know the goal and conn
 ## Easy to forget
 
 - The echo lists every required file by path; skipping a required file is the bug this file exists to prevent.
-- A plan is on disk before anything is built. A report exists before work is called done.
+- A plan is on disk before anything is built, and names its workflow mode; read that mode's file before building. A report exists before work is called done.
 - One `<name>` per piece of work, used three times: `plans/<date>_<name>`, `reports/<date>_<name>`, `artifacts/<name>/`. A pair's artifacts never sit loose in `artifacts/`.
 - Reports show their proofs: embed every plot, screenshot, small table or short log excerpt that reasonably fits; link only what is too big.
 - The card is rewritten in place.

@@ -308,8 +308,9 @@ docs/
   agent/           # setup-agent instructions
   STARMAP.md       # the map: usage, then maintainer notes
 templates/         # what artifacts look like
-  programming/     # plan, build, report, ship
-  research/        # plan, execute, report
+  programming/     # plan, report, ship
+  research/        # plan, report
+  workflow/        # workflow modes: solo, orchestrated
   addons/          # games and lessons
 examples/          # owner-fit template, style pack, host configs
 atlas.py           # validator

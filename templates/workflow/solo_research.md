@@ -1,4 +1,4 @@
-# Execution Discipline (autonomous research runs)
+# Solo workflow (research): you run the plan's experiments yourself
 
 The only acceptable operating mode for autonomous experiment execution. The
 goal is simple:

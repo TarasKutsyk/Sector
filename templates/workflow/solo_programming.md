@@ -1,4 +1,4 @@
-# Build Discipline
+# Solo workflow (programming): you build the plan yourself
 
 Implement exactly the approved plan or user request.
 

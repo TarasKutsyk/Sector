@@ -128,7 +128,8 @@ figure svg { border-color:var(--hairline-2); fill:var(--ink); }
 <tr><td>G-…</td><td>…</td><td>…</td></tr>
 </table>
 
-<h2>Execution discipline</h2>
+<h2>Workflow</h2>
+<p><b>Mode:</b> solo | orchestrated, as the interview settled; the build follows <code>workflow/solo.md</code> or <code>workflow/orchestrated.md</code> from the core context dir.</p>
 <div class="diagram">Phase 0 … ──▶ Phase 1 … ──▶ Phase 2 …  (one line per phase, the entrypoint and the artifact it saves)</div>
 <div class="note"><span class="k">Env.</span> The constraint that matters for this run: machine, paths, what must never run concurrently, where results are saved and where they must not be.</div>
 <div class="note"><span class="k">Agents.</span> Whether subagents may be spawned at all, how many at a time, of which type, for which steps, and what they may never do (e.g. author the key artifact).</div>
