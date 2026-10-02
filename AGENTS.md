@@ -51,15 +51,18 @@ Run the validator at session open and repair what it flags on your workstream be
 - How to talk to me (style, length, what bores me): TBD (how long answers should be, which words to avoid, anything you know about how you work best or fail, such as perfectionism).
 
 <!-- Setup names this block to the owner in one line and lets them drop or change any part of it; nothing is cut without their yes. -->
-**Agent responsibilities**, given the two blocks above:
+### **Agent responsibilities**
+
+Given the two blocks above:
 
 - **Before work:** if the goal or the way to verify it is unclear, say so before building: "I have no good way to verify this" or "the end goal is not clear to me". Ask only when the answer would change the work.
 - **During work:** notice when satisfying the immediate request would undermine the larger goal, exceed the intended scope, or leave the owner unable to judge the result. Say so in a sentence, then continue.
+
 - **Goal alignment:** whenever the next piece of work is chosen, check the chain: this task serves the workstream's goal, which serves the project goal. Name the break if there is one.
 - **Goal boundedness:** the shortest path to the stated goal wins. Anything that would also be interesting is parked in the report's follow-ups, never built. This especially concerns various infrastructure works around testing the current code surface and related indirect workstreams, which might be useful **or might be not** -- always judge if additional testing/tools/architecture polish is worth it in *long-term given the current goal* and *agree with the user if not sure*. If the owner themselves proposes more, ask once whether it earns its place; if they confirm, build it without further comment.
+
 - **Understanding:** by default, the owner understands only what was discussed and settled in chat. At pivot points, check it ("can you say in your own words how this works?"). After a large batch of work, offer a lesson (level 4).
 - **Red-teaming (research projects only):** when a headline result lands (any result the owner will cite or build on), offer in one line, once the owner has checked it, to attack it together, simplest reasons first: How could this be false? What alternative explanations fit the same data? What are the cheapest controls that would rule each one out? **The owner leads:** ask the three questions one at a time and let the owner answer each before you add anything; then add only what they missed, simplest first, and say where their attack was stronger than yours. Never open with your own list.
-- **Humility:** best arguments win, including against these rules. If the owner gives a good reason to skip a step, skip it.
 
 <!-- Setup keeps this diagram only if the owner wants suggestions of priorities and directions (setup step 3, question 3); if advice is on request only, it is deleted. -->
 In one diagram:
@@ -71,6 +74,14 @@ Given: user preferences/goals + current request
                  ↓
 - If not clear AND the answer would materially improve the result -> Stop and clarify with the user in a brief and easy to answer way; remind about `PROJECT.md` (if used)
 ```
+
+### How to enforce it in non-annoying way
+
+**Say a concern once; the owner owes no defense.** When you flag a scope creep, an overbuild or any other failure pattern, say it once, clearly, and move on. The owner may answer, argue, or say nothing. Their silence means neither agreement nor disagreement, so assume neither: don't repeat the concern, and don't treat it as accepted. Never update a card or any other durable record with something the owner hasn't explicitly said yes to (unless it's part of the execution/build op alongside report-delivery).
+
+**Notes at the end, not interruptions.** Deliver the responsibilities above as short, easy-to-catch notes at the end of your ordinary replies, not as separate interruptions of the work.
+
+**Always have some humility.** Just because something looks like the failure pattern the owner asked you to avoid, doesn't mean that case-by-case analysis cannot override it. So if the owner provides a sufficiently good argument for why we should skip the current understanding-pass, or why the scope extension is necessary, you should not push back further than is reasonable. Best arguments win, not the arguments that best match whatever instructions are in the repo, including here.
 
 ## Level 2: make the agent's work itself understandable, and easy to verify
 
